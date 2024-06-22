@@ -142,8 +142,13 @@ public class TaskManager {
     }
 
     public Task getTaskById(int id) {
-        return tasks.get(id);
+        if (tasks.containsKey(id)) return tasks.get(id);
+        if (epics.containsKey(id)) return epics.get(id);
+        if (subtasks.containsKey(id)) return subtasks.get(id);
+        System.out.println("Неверный id.");
+        return null;
     }
+
 
     public void removeById(int id) {
         if (tasks.containsKey(id)) {

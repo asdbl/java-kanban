@@ -91,6 +91,10 @@ public class Main {
 
         System.out.print("Получение задачи по id: ");
         System.out.println(taskManager.getTaskById(task1.getId()));
+        System.out.print("Получение эпика по id: ");
+        System.out.println(taskManager.getTaskById(epic1.getId()));
+        System.out.print("Получение подзадачи по id: ");
+        System.out.println(taskManager.getTaskById(subtask1.getId()));
 
         printSmth();
 
