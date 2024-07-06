@@ -197,7 +197,6 @@ class InMemoryTaskManagerTest {
     void shouldBeEqualIfTaskSame() {
         Task task1 = new Task("task1", "task1 description", Status.NEW);
         Task task2 = new Task("task1", "task1 description", Status.NEW);
-
         Assertions.assertEquals(task1, task2);
     }
 
@@ -205,7 +204,6 @@ class InMemoryTaskManagerTest {
     void shouldBeEqualIfEpicSame() {
         Epic epic1 = new Epic("epic1", "epic1 description", Status.NEW, new ArrayList<>());
         Epic epic2 = new Epic("epic1", "epic1 description", Status.NEW, new ArrayList<>());
-
         Assertions.assertEquals(epic1, epic2);
     }
 
@@ -214,7 +212,6 @@ class InMemoryTaskManagerTest {
         Epic epic1 = new Epic("epic1", "epic1 description", Status.NEW, new ArrayList<>());
         Subtask subtask1 = new Subtask("subtask1", "subtask1 description", Status.NEW, epic1.getId());
         Subtask subtask2 = new Subtask("subtask1", "subtask1 description", Status.NEW, epic1.getId());
-
         Assertions.assertEquals(subtask1, subtask2);
     }
 
@@ -279,11 +276,9 @@ class InMemoryTaskManagerTest {
         inMemoryTaskManager.add(task1);
         Task task2 = new Task("task2", "task2 description", Status.NEW);
         inMemoryTaskManager.add(task2);
-
         Assertions.assertEquals(1, inMemoryTaskManager.getTaskById(task1.getId()).getId());
         Assertions.assertEquals(2, inMemoryTaskManager.getTaskById(task2.getId()).getId());
     }
-
 
     @Test
     void historyShouldSaveOldVersionsOfTask() {
@@ -297,6 +292,25 @@ class InMemoryTaskManagerTest {
         inMemoryTaskManager.getTaskById(task.getId());
         Assertions.assertEquals(expectedTask1, inMemoryTaskManager.getHistory().get(0));
         Assertions.assertEquals(task, inMemoryTaskManager.getHistory().get(1));
+    }
 
+    @Test
+    void maxSizeOfHistoryIs10() {
+        for (int i = 0; i < 11; i++) {
+            Task task = new Task("task" + i, "task" + i, Status.NEW);
+            inMemoryTaskManager.add(task);
+            inMemoryTaskManager.getTaskById(task.getId());
+        }
+        Assertions.assertEquals(10, inMemoryTaskManager.getHistory().size());
+    }
+
+    @Test
+    void shouldRemoveTheOldestTaskWhenMaxSizeMoreThen10() {
+        for (int i = 0; i < 11; i++) {
+            Task task = new Task("task" + i, "task" + i, Status.NEW);
+            inMemoryTaskManager.add(task);
+            inMemoryTaskManager.getTaskById(task.getId());
+        }
+        Assertions.assertNotEquals(inMemoryTaskManager.getTaskById(1), inMemoryTaskManager.getHistory().get(0));
     }
 }

@@ -10,27 +10,15 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (historyList.isEmpty()) {
-            Task tempTask = new Task(task.getTaskName(), task.getTaskDescription(), task.getStatus());
-            tempTask.setId(task.getId());
-            historyList.add(tempTask);
-            historyListIndex++;
+        if (task == null) {
             return;
-        }
-        if (historyListIndex == (INITIAL_CAPACITY)) {
-            historyListIndex = 0;
         }
         if (historyList.size() == INITIAL_CAPACITY) {
             historyList.removeFirst();
-            Task tempTask = new Task(task.getTaskName(), task.getTaskDescription(), task.getStatus());
-            tempTask.setId(task.getId());
-            historyList.add(tempTask);
-
-        } else {
-            Task tempTask = new Task(task.getTaskName(), task.getTaskDescription(), task.getStatus());
-            tempTask.setId(task.getId());
-            historyList.add(tempTask);
         }
+        Task tempTask = new Task(task.getTaskName(), task.getTaskDescription(), task.getStatus());
+        tempTask.setId(task.getId());
+        historyList.add(tempTask);
         historyListIndex++;
     }
 
