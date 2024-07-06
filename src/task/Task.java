@@ -18,7 +18,7 @@ public class Task {
         return taskName;
     }
 
-    public void setTaskName(String taskName) {
+    protected void setTaskName(String taskName) {
         this.taskName = taskName;
     }
 
@@ -26,7 +26,7 @@ public class Task {
         return taskDescription;
     }
 
-    public void setTaskDescription(String taskDescription) {
+    protected void setTaskDescription(String taskDescription) {
         this.taskDescription = taskDescription;
     }
 
@@ -34,7 +34,7 @@ public class Task {
         return status;
     }
 
-    public void setStatus(Status status) {
+    protected void setStatus(Status status) {
         this.status = status;
     }
 
@@ -42,7 +42,7 @@ public class Task {
         return id;
     }
 
-    public void setId(int id) {
+    protected void setId(int id) {
         this.id = id;
     }
 
