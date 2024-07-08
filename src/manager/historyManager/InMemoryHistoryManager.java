@@ -1,4 +1,4 @@
-package manager;
+package manager.historyManager;
 
 import task.Task;
 
@@ -22,9 +22,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (historyList.size() == INITIAL_CAPACITY) {
             historyList.removeFirst();
         }
-        Task tempTask = new Task(task.getTaskName(), task.getTaskDescription(), task.getStatus());
-        tempTask.setId(task.getId());
-        historyList.add(tempTask);
+        historyList.add(task);
         historyListIndex++;
     }
 
