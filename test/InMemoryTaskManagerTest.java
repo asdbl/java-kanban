@@ -261,7 +261,7 @@ class InMemoryTaskManagerTest {
         inMemoryTaskManager.add(subtask1);
         ArrayList<Task> expectedTaskList = new ArrayList<>();
         ArrayList<Epic> expectedEpicList = new ArrayList<>();
-        ArrayList<Subtask> expectedSubtaskList = new ArrayList<>();
+        ArrayList<Subtask> expectedSubtaskList = new ArrayList<>();//comment
         expectedTaskList.add(task1);
         expectedEpicList.add(epic1);
         expectedSubtaskList.add(subtask1);
