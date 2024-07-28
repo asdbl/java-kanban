@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class InMemoryTaskManager extends StatusSetter implements TaskManager{
+public class InMemoryTaskManager extends StatusSetter implements TaskManager {
     private static int id = 1;
     private final HashMap<Integer, Task> tasks;
     private final HashMap<Integer, Epic> epics;
@@ -39,11 +39,11 @@ public class InMemoryTaskManager extends StatusSetter implements TaskManager{
     @Override
     public void add(Epic epic) {
         if (isDuplicate(epic)) return;
-        if(epic.getSubtaskIdList().contains(epic.getId())) {
+        if (epic.getSubtaskIdList().contains(epic.getId())) {
             System.out.println("В эпик нельзя добавить самого себя");
             return;
         }
-        for (int id : epic.getSubtaskIdList()){
+        for (int id : epic.getSubtaskIdList()) {
             if (epics.containsKey(id)) {
                 System.out.println("Эпик не может быть подзадачей");
                 return;
@@ -124,12 +124,12 @@ public class InMemoryTaskManager extends StatusSetter implements TaskManager{
         epics.put(epic.getId(), epic);
         if (epic.getStatus() == Status.NEW) {
             for (int i : epic.getSubtaskIdList()) {
-                setTaskStatus(subtasks.get(i),Status.NEW);
+                setTaskStatus(subtasks.get(i), Status.NEW);
             }
         }
         if (epic.getStatus() == Status.DONE) {
             for (int i : epic.getSubtaskIdList()) {
-                setTaskStatus(subtasks.get(i),Status.DONE);
+                setTaskStatus(subtasks.get(i), Status.DONE);
             }
         }
     }
