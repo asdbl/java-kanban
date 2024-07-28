@@ -1,4 +1,5 @@
 package manager.historyManager;
+
 import task.Task;
 
 public class HistoryNode<T> {
