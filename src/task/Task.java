@@ -1,5 +1,7 @@
 package task;
 
+import manager.taskManager.InMemoryTaskManager;
+
 import java.util.Objects;
 
 public class Task {
@@ -9,6 +11,7 @@ public class Task {
     private Status status;
 
     public Task(String taskName, String taskDescription, Status status) {
+        setId(InMemoryTaskManager.getId());
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.status = status;
@@ -34,7 +37,7 @@ public class Task {
         return status;
     }
 
-    public void setStatus(Status status) {
+    protected void setStatus(Status status) {
         this.status = status;
     }
 
@@ -42,7 +45,7 @@ public class Task {
         return id;
     }
 
-    public void setId(int id) {
+    protected void setId(int id) {
         this.id = id;
     }
 
