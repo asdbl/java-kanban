@@ -80,7 +80,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             lastNode = prev;
     }
 
-    private static class HistoryNode<Task> {
+    static class HistoryNode<T extends Task> {
         private final Task node;
         private HistoryNode<Task> next;
         private HistoryNode<Task> prevNode;
