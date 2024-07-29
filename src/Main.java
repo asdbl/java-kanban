@@ -1,4 +1,3 @@
-
 import manager.taskManager.InMemoryTaskManager;
 import task.Epic;
 import task.Status;
@@ -6,15 +5,10 @@ import task.Subtask;
 import task.Task;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        Map<Integer, Task> tasks = new HashMap<>();
-        Map<Integer, Epic> epics = new HashMap<>();
-        Map<Integer, Subtask> subtasks = new HashMap<>();
-        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager(tasks, epics, subtasks);
+        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
         Task task1 = new Task("t1", "t1d", Status.NEW);
         inMemoryTaskManager.add(task1);
         Task task2 = new Task("t2", "t2d", Status.NEW);

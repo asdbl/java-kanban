@@ -1,20 +1,18 @@
-import manager.taskManager.InMemoryTaskManager;
 import manager.Managers;
+import manager.taskManager.InMemoryTaskManager;
 import manager.taskManager.TaskManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import task.*;
+import task.Epic;
+import task.Status;
+import task.Subtask;
+import task.Task;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 class InMemoryTaskManagerTest {
 
-    Map<Integer, Task> tasks = new HashMap<>();
-    Map<Integer, Epic> epics = new HashMap<>();
-    Map<Integer, Subtask> subtasks = new HashMap<>();
-    InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager(tasks, epics, subtasks);
+    InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
 
     @Test
     void shouldBeAddedTaskToTaskManager() {
@@ -237,8 +235,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void managerShouldReturnReadyToUseTaskManager() {
-        TaskManager taskManager = new InMemoryTaskManager(new HashMap<>(), new HashMap<>(),
-                new HashMap<>());
+        TaskManager taskManager = new InMemoryTaskManager();
         TaskManager taskManager1 = Managers.getDefault();
         Task task1 = new Task("task1", "task1 description", Status.NEW);
         taskManager1.add(task1);
@@ -297,7 +294,7 @@ class InMemoryTaskManagerTest {
         Subtask subtask = new Subtask("subtask", "subtask description", Status.NEW, epic.getId());
         inMemoryTaskManager.add(subtask);
         inMemoryTaskManager.removeById(subtask.getId());
-        Assertions.assertNull(subtasks.get(subtask.getId()));
+        Assertions.assertNull(inMemoryTaskManager.getTaskById(subtask.getId()));
     }
 
     @Test
@@ -307,7 +304,7 @@ class InMemoryTaskManagerTest {
         Subtask subtask1 = new Subtask("subtask1", "subtask1 description", Status.NEW, epic.getId());
         inMemoryTaskManager.add(subtask1);
         inMemoryTaskManager.removeById(subtask1.getId());
-        Assertions.assertNull(subtasks.get(subtask1.getId()));
+        Assertions.assertNull(inMemoryTaskManager.getTaskById(subtask1.getId()));
     }
 
     @Test
