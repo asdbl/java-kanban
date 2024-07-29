@@ -14,11 +14,18 @@ public class Task {
         this.status = status;
     }
 
+    public Task(Task task) {
+        this.taskName = task.taskName;
+        this.taskDescription = task.taskDescription;
+        this.status = task.status;
+        this.id = task.id;
+    }
+
     public String getTaskName() {
         return taskName;
     }
 
-    protected void setTaskName(String taskName) {
+    public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
 
@@ -26,7 +33,7 @@ public class Task {
         return taskDescription;
     }
 
-    protected void setTaskDescription(String taskDescription) {
+    public void setTaskDescription(String taskDescription) {
         this.taskDescription = taskDescription;
     }
 
@@ -48,8 +55,8 @@ public class Task {
 
     @Override
     public String toString() {
-        return String.format("Task{id=%d, taskName='%s', taskDescription='%s', status='%s'}"
-                , getId(), getTaskName(), getTaskDescription(), getStatus());
+        return String.format("Task{id=%d, taskName='%s', taskDescription='%s', status='%s'}",
+                getId(), getTaskName(), getTaskDescription(), getStatus());
     }
 
     @Override
@@ -57,11 +64,12 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return Objects.equals(taskName, task.taskName) && Objects.equals(taskDescription, task.taskDescription);
+        return Objects.equals(taskName, task.taskName) && Objects.equals(taskDescription, task.taskDescription) &&
+                Objects.equals(status, task.status) && id == task.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(taskName, taskDescription);
+        return Objects.hash(taskName, taskDescription, id, status);
     }
 }

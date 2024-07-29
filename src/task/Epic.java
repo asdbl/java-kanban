@@ -10,13 +10,18 @@ public class Epic extends Task {
         this.subtaskIdList = subtaskIdList;
     }
 
+    public Epic(Epic epic) {
+        super(epic);
+        this.subtaskIdList = epic.subtaskIdList;
+    }
+
     public ArrayList<Integer> getSubtaskIdList() {
         return subtaskIdList;
     }
 
     @Override
     public String toString() {
-        return String.format("Epic{id=%d, taskName='%s', taskDescription='%s', status=%s, subtaskIdList=%s}"
-                , getId(), getTaskName(), getTaskDescription(), getStatus(), getSubtaskIdList());
+        return String.format("Epic{id=%d, taskName='%s', taskDescription='%s', status=%s, subtaskIdList=%s}",
+                getId(), getTaskName(), getTaskDescription(), getStatus(), getSubtaskIdList());
     }
 }

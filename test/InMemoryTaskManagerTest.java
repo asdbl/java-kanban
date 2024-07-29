@@ -1,19 +1,18 @@
-import manager.taskManager.InMemoryTaskManager;
 import manager.Managers;
+import manager.taskManager.InMemoryTaskManager;
 import manager.taskManager.TaskManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import task.*;
+import task.Epic;
+import task.Status;
+import task.Subtask;
+import task.Task;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 class InMemoryTaskManagerTest {
 
-    HashMap<Integer, Task> tasks = new HashMap<>();
-    HashMap<Integer, Epic> epics = new HashMap<>();
-    HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager(tasks, epics, subtasks);
+    InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
 
     @Test
     void shouldBeAddedTaskToTaskManager() {
@@ -56,7 +55,6 @@ class InMemoryTaskManagerTest {
         epic1 = epicToUpdate;
         inMemoryTaskManager.update(epic1);
         Assertions.assertEquals(epicToUpdate, inMemoryTaskManager.getTaskById(epic1.getId()));
-
     }
 
     @Test
@@ -154,7 +152,7 @@ class InMemoryTaskManagerTest {
     void shouldReturnTask1ById1() {
         Task task1 = new Task("task1", "task1 description", Status.NEW);
         inMemoryTaskManager.add(task1);
-        Assertions.assertEquals(task1, inMemoryTaskManager.getTaskById(1));
+        Assertions.assertEquals(task1, inMemoryTaskManager.getTaskById(task1.getId()));
     }
 
     @Test
@@ -170,17 +168,17 @@ class InMemoryTaskManagerTest {
         expectedTaskList.add(task2);
         expectedTaskList.add(task3);
         inMemoryTaskManager.getTaskById(task1.getId());
-        inMemoryTaskManager.getTaskById(2);
-        inMemoryTaskManager.getTaskById(3);
+        inMemoryTaskManager.getTaskById(task2.getId());
+        inMemoryTaskManager.getTaskById(task3.getId());
         Assertions.assertEquals(expectedTaskList, inMemoryTaskManager.getHistory());
     }
 
     @Test
-    void shouldRemoveTask1ById1() {
+    void shouldRemoveTaskById() {
         Task task1 = new Task("task1", "task1 description", Status.NEW);
         inMemoryTaskManager.add(task1);
         Assertions.assertEquals(task1, inMemoryTaskManager.getTaskById(task1.getId()));
-        inMemoryTaskManager.removeById(1);
+        inMemoryTaskManager.removeById(task1.getId());
         Assertions.assertNull(inMemoryTaskManager.getTaskById(task1.getId()));
     }
 
@@ -219,31 +217,25 @@ class InMemoryTaskManagerTest {
     void shouldNotBeAbleToPutEpicAsSubtask() {
         Epic epic1 = new Epic("epic1", "epic1 description", Status.NEW, new ArrayList<>());
         Epic epic2 = new Epic("epic2", "epic2 description", Status.NEW, new ArrayList<>());
-        epic1.getSubtaskIdList().add(epic2.getId());
-        epic2.getSubtaskIdList().add(epic1.getId());
+        epic1.getSubtaskIdList().add(epic1.getId());
+        epic2.getSubtaskIdList().add(epic2.getId());
         inMemoryTaskManager.add(epic1);
         inMemoryTaskManager.add(epic2);
-        ArrayList<Integer> expected = new ArrayList<>();
-        expected.add(0);
-        Assertions.assertNull(inMemoryTaskManager.getTaskById(0));
-        Assertions.assertEquals(1, epic1.getId());
-        Assertions.assertEquals(2, epic2.getId());
-        Assertions.assertEquals(expected, epic1.getSubtaskIdList());
-        Assertions.assertEquals(expected, epic2.getSubtaskIdList());
+        Assertions.assertEquals(new ArrayList<>(), inMemoryTaskManager.getEpics());
     }
 
     @Test
     void shouldNotBeAbleToMakeSubtaskAsEpic() {
         Epic epic1 = new Epic("epic1", "epic1 description", Status.NEW, new ArrayList<>());
         inMemoryTaskManager.add(epic1);
-        Subtask subtask1 = new Subtask("subtask1", "subtask1 description", Status.NEW, 1);
+        Subtask subtask1 = new Subtask("subtask1", "subtask1 description", Status.NEW, epic1.getId());
         inMemoryTaskManager.add(subtask1);
         Assertions.assertNotEquals(subtask1.getId(), subtask1.getEpicId());
     }
 
     @Test
     void managerShouldReturnReadyToUseTaskManager() {
-        TaskManager taskManager = new InMemoryTaskManager(new HashMap<Integer, Task>(), new HashMap<Integer, Epic>(), new HashMap<Integer, Subtask>());
+        TaskManager taskManager = new InMemoryTaskManager();
         TaskManager taskManager1 = Managers.getDefault();
         Task task1 = new Task("task1", "task1 description", Status.NEW);
         taskManager1.add(task1);
@@ -274,10 +266,12 @@ class InMemoryTaskManagerTest {
     void createdIdAndGeneratedIdShouldNotConflict() {
         Task task1 = new Task("task1", "task1 description", Status.NEW);
         inMemoryTaskManager.add(task1);
+        int firstId = task1.getId();
         Task task2 = new Task("task2", "task2 description", Status.NEW);
         inMemoryTaskManager.add(task2);
-        Assertions.assertEquals(1, inMemoryTaskManager.getTaskById(task1.getId()).getId());
-        Assertions.assertEquals(2, inMemoryTaskManager.getTaskById(task2.getId()).getId());
+        int secondId = task2.getId();
+        Assertions.assertEquals(firstId, inMemoryTaskManager.getTaskById(task1.getId()).getId());
+        Assertions.assertEquals(secondId, inMemoryTaskManager.getTaskById(task2.getId()).getId());
     }
 
     @Test
@@ -286,8 +280,7 @@ class InMemoryTaskManagerTest {
         inMemoryTaskManager.add(task);
         Task expectedTask1 = task;
         inMemoryTaskManager.getTaskById(task.getId());
-        Task task2 = new Task("task2", "task2 description", Status.NEW);
-        task = task2;
+        task = new Task("task2", "task2 description", Status.NEW);
         inMemoryTaskManager.update(task);
         inMemoryTaskManager.getTaskById(task.getId());
         Assertions.assertEquals(expectedTask1, inMemoryTaskManager.getHistory().get(0));
@@ -295,22 +288,67 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void maxSizeOfHistoryIs10() {
-        for (int i = 0; i < 11; i++) {
-            Task task = new Task("task" + i, "task" + i, Status.NEW);
-            inMemoryTaskManager.add(task);
-            inMemoryTaskManager.getTaskById(task.getId());
-        }
-        Assertions.assertEquals(10, inMemoryTaskManager.getHistory().size());
+    void shouldRemoveSubtask() {
+        Epic epic = new Epic("epic", "epic description", Status.NEW, new ArrayList<>());
+        inMemoryTaskManager.add(epic);
+        Subtask subtask = new Subtask("subtask", "subtask description", Status.NEW, epic.getId());
+        inMemoryTaskManager.add(subtask);
+        inMemoryTaskManager.removeById(subtask.getId());
+        Assertions.assertNull(inMemoryTaskManager.getTaskById(subtask.getId()));
     }
 
     @Test
-    void shouldRemoveTheOldestTaskWhenMaxSizeMoreThen10() {
-        for (int i = 0; i < 11; i++) {
-            Task task = new Task("task" + i, "task" + i, Status.NEW);
-            inMemoryTaskManager.add(task);
-            inMemoryTaskManager.getTaskById(task.getId());
-        }
-        Assertions.assertNotEquals(inMemoryTaskManager.getTaskById(1), inMemoryTaskManager.getHistory().get(0));
+    void deletedSubtaskShouldNotStoreOldId() {
+        Epic epic = new Epic("epic", "epic description", Status.NEW, new ArrayList<>());
+        inMemoryTaskManager.add(epic);
+        Subtask subtask1 = new Subtask("subtask1", "subtask1 description", Status.NEW, epic.getId());
+        inMemoryTaskManager.add(subtask1);
+        inMemoryTaskManager.removeById(subtask1.getId());
+        Assertions.assertNull(inMemoryTaskManager.getTaskById(subtask1.getId()));
+    }
+
+    @Test
+    void epicsSubtaskIdListShouldBeEmptyWhenSubtasksDeleted() {
+        Epic epic = new Epic("epic", "epic description", Status.NEW, new ArrayList<>());
+        inMemoryTaskManager.add(epic);
+        Subtask subtask1 = new Subtask("subtask1", "subtask1 description", Status.NEW, epic.getId());
+        inMemoryTaskManager.add(subtask1);
+        Subtask subtask2 = new Subtask("subtask2", "subtask2 description", Status.NEW, epic.getId());
+        inMemoryTaskManager.add(subtask2);
+        ArrayList<Integer> subtaskIdList = new ArrayList<>();
+        subtaskIdList.add(subtask1.getId());
+        subtaskIdList.add(subtask2.getId());
+        Assertions.assertEquals(subtaskIdList, epic.getSubtaskIdList());
+        subtaskIdList.removeFirst();
+        inMemoryTaskManager.removeById(subtask1.getId());
+        Assertions.assertEquals(subtaskIdList, epic.getSubtaskIdList());
+        subtaskIdList.removeFirst();
+        inMemoryTaskManager.removeById(subtask2.getId());
+        Assertions.assertEquals(new ArrayList<>(), epic.getSubtaskIdList());
+    }
+
+    @Test
+    void settersShouldNotAffectOnManager() {
+        Task task = new Task("task", "task description", Status.NEW);
+        inMemoryTaskManager.add(task);
+        int taskId = task.getId();
+        task.setId(289);
+        task.setStatus(Status.DONE);
+        Assertions.assertNotEquals(task, inMemoryTaskManager.getTaskById(taskId));
+
+        Epic epic = new Epic("epic", "epic description", Status.NEW, new ArrayList<>());
+        inMemoryTaskManager.add(epic);
+        int epicId = epic.getId();
+        epic.setId(290);
+        epic.setStatus(Status.DONE);
+        Assertions.assertNotEquals(epic, inMemoryTaskManager.getTaskById(epicId));
+
+        Subtask subtask = new Subtask("subtask", "subtask description", Status.NEW, epicId);
+        inMemoryTaskManager.add(subtask);
+        int subtaskId = subtask.getId();
+        subtask.setId(291);
+        subtask.setStatus(Status.DONE);
+        Assertions.assertNotEquals(subtask, inMemoryTaskManager.getTaskById(subtaskId));
+
     }
 }
