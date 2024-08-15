@@ -127,7 +127,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return taskToString;
     }
 
-    public static Task fromString(String value) {
+    public static void addToManagerFromString(String value, FileBackedTaskManager fileBackedTaskManager) {
         if (value != null && !value.isEmpty()) {
             String[] taskFromString = value.split(",");
             int id = Integer.parseInt(taskFromString[0]);
@@ -139,7 +139,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 case "TASK" -> {
                     Task task = new Task(taskName, description, status);
                     task.setId(id);
-                    return task;
+                    fileBackedTaskManager.addWithoutSave(task);
                 }
                 case "EPIC" -> {
                     List<Integer> subtaskId = new ArrayList<>();
@@ -153,19 +153,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     }
                     Epic epic = new Epic(taskName, description, status, subtaskId);
                     epic.setId(id);
-                    return epic;
+                    fileBackedTaskManager.addWithoutSave(epic);
                 }
                 case "SUBTASK" -> {
                     if (taskFromString[5] != null) {
                         int epicIdFromFile = Integer.parseInt(taskFromString[5]);
                         Subtask subtask = new Subtask(taskName, description, status, epicIdFromFile);
                         subtask.setId(id);
-                        return subtask;
+                        fileBackedTaskManager.addWithoutSave(subtask);
                     }
                 }
             }
         }
-        return null;
     }
 
     public void save() throws ManagerSaveException {
@@ -176,6 +175,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(toString(task));
                 writer.write("\n");
             }
+        } catch (ManagerSaveException e) {
+            throw new ManagerSaveException("Ошибка сохранения файла.", e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -187,13 +188,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file.toPath());
             while (line != null) {
                 line = bufferedReader.readLine();
-                if (line != null) {
-                    if (fromString(line) instanceof Epic) {
-                        fileBackedTaskManager.addWithoutSave((Epic) (fromString(line)));
-                    } else if (fromString(line) instanceof Subtask) {
-                        fileBackedTaskManager.addWithoutSave((Subtask) fromString(line));
-                    } else fileBackedTaskManager.addWithoutSave(fromString(line));
-                }
+                addToManagerFromString(line, fileBackedTaskManager);
             }
             return fileBackedTaskManager;
         } catch (IOException e) {

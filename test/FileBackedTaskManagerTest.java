@@ -30,14 +30,11 @@ public class FileBackedTaskManagerTest {
         Task task = new Task("t1", "t1d", Status.NEW);
         manager.add(task);
         String expected = "1,TASK,t1,NEW,t1d";
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            reader.readLine();
-            String line = reader.readLine();
-            Assertions.assertEquals(expected, line);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        reader.readLine();
+        String line = reader.readLine();
+        Assertions.assertEquals(expected, line);
+
     }
 
     @Test

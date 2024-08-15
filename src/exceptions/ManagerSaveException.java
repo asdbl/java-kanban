@@ -8,4 +8,12 @@ public class ManagerSaveException extends RuntimeException {
         super(message);
     }
 
+    public ManagerSaveException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ManagerSaveException(Throwable cause) {
+        super(cause);
+    }
+
 }
