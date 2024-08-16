@@ -64,51 +64,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    @Override
-    public List<Task> getTasks() {
-        return super.getTasks();
-    }
-
-    @Override
-    public List<Subtask> getSubtasks() {
-        return super.getSubtasks();
-    }
-
-    @Override
-    public List<Epic> getEpics() {
-        return super.getEpics();
-    }
-
-    @Override
-    public List<Task> getAll() {
-        return super.getAll();
-    }
-
-    @Override
-    public void clear() {
-        super.clear();
-    }
-
-    @Override
-    public Task getTaskById(int id) {
-        return super.getTaskById(id);
-    }
-
-    @Override
-    public List<Task> getHistory() {
-        return super.getHistory();
-    }
-
-    @Override
-    public void removeById(int id) {
-        super.removeById(id);
-    }
-
-    @Override
-    public List<Subtask> getSubtasksByEpic(Epic epic) {
-        return super.getSubtasksByEpic(epic);
-    }
-
     public String toString(Task task) {
         TasksType tasksType;
         String taskToString = null;
@@ -175,10 +130,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(toString(task));
                 writer.write("\n");
             }
-        } catch (ManagerSaveException e) {
-            throw new ManagerSaveException("Ошибка сохранения файла.", e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ManagerSaveException("Ошибка сохранения файла.", e);
         }
     }
 
