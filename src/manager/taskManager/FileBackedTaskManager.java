@@ -10,6 +10,7 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final Path filename;
+    private static final String HEADER = "id,type,name,status,description,epic";
 
     public FileBackedTaskManager(Path filename) {
         super();
@@ -61,6 +62,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void update(Subtask subtask) {
         super.update(subtask);
+        save();
+    }
+
+    @Override
+    public void removeById(int id) {
+        super.removeById(id);
+        save();
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
         save();
     }
 
@@ -124,14 +137,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void save() throws ManagerSaveException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename.toFile()))) {
-            writer.write("id,type,name,status,description,epic");
-            writer.write("\n");
+            writer.write(HEADER);
+            writer.newLine();
             for (Task task : getAll()) {
                 writer.write(toString(task));
-                writer.write("\n");
+                writer.newLine();
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка сохранения файла.", e);
+            throw new ManagerSaveException("Ошибка сохранения в файл: " + filename, e);
         }
     }
 

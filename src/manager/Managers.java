@@ -5,7 +5,9 @@ import manager.historyManager.InMemoryHistoryManager;
 import manager.taskManager.FileBackedTaskManager;
 import manager.taskManager.TaskManager;
 
-import java.nio.file.Paths;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class Managers {
 
@@ -13,7 +15,20 @@ public class Managers {
     }
 
     public static TaskManager getDefault() {
-        return new FileBackedTaskManager(Paths.get("savedTasks.csv"));
+        try {
+            Path file = Path.of("src/resources/savedTask.csv");
+            Path dir = Path.of("src/resources");
+            if (!Files.exists(dir)) {
+                Files.createDirectory(dir);
+                Files.createFile(file);
+            }
+            if (!Files.exists(file)) {
+                Files.createFile(file);
+            }
+            return new FileBackedTaskManager(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static HistoryManager getDefaultHistory() {

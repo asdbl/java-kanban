@@ -1,3 +1,4 @@
+import manager.Managers;
 import manager.taskManager.FileBackedTaskManager;
 import manager.taskManager.InMemoryTaskManager;
 import task.Epic;
@@ -5,16 +6,12 @@ import task.Status;
 import task.Subtask;
 import task.Task;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-
-        Path path = Paths.get("savedTasks.csv");
         InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
-        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(path);
+        FileBackedTaskManager fileBackedTaskManager = (FileBackedTaskManager) Managers.getDefault();
 
         Task task1 = new Task("t1", "t1d", Status.NEW);
         inMemoryTaskManager.add(task1);
@@ -56,6 +53,8 @@ public class Main {
         System.out.println("История inMemoryTaskManager после удаления эпика с тремя подзадачами: " + inMemoryTaskManager.getHistory());
         inMemoryTaskManager.clear();
         System.out.println("История inMemoryTaskManager после удаления всех задач: " + inMemoryTaskManager.getHistory());
+
+        System.out.println(fileBackedTaskManager.getTasks());
 
         fileBackedTaskManager.getTaskById(task1.getId());
         fileBackedTaskManager.getTaskById(task2.getId());
