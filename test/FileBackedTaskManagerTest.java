@@ -1,4 +1,5 @@
 import manager.taskManager.FileBackedTaskManager;
+import manager.taskManager.TaskManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import task.Epic;
@@ -17,7 +18,7 @@ public class FileBackedTaskManagerTest {
 
     @Test
     public void testAdd() throws IOException {
-        FileBackedTaskManager manager = new FileBackedTaskManager(File.createTempFile("savedTest", ".csv").toPath());
+        TaskManager manager = new FileBackedTaskManager(File.createTempFile("savedTest", ".csv").toPath());
         Task task = new Task("t1", "t1d", Status.NEW);
         manager.add(task);
         Assertions.assertTrue(manager.getTasks().contains(task));
@@ -26,7 +27,7 @@ public class FileBackedTaskManagerTest {
     @Test
     public void savingToFileTest() throws IOException {
         File file = File.createTempFile("savedTest", ".csv");
-        FileBackedTaskManager manager = new FileBackedTaskManager(file.toPath());
+        TaskManager manager = new FileBackedTaskManager(file.toPath());
         Task task = new Task("t1", "t1d", Status.NEW);
         manager.add(task);
         String expected = "1,TASK,t1,NEW,t1d";
@@ -40,7 +41,7 @@ public class FileBackedTaskManagerTest {
     @Test
     public void loadingFromFileTest() throws IOException {
         File file = File.createTempFile("savedTest", ".csv");
-        FileBackedTaskManager manager = new FileBackedTaskManager(file.toPath());
+        TaskManager manager = new FileBackedTaskManager(file.toPath());
         Task task = new Task("t1", "t1d", Status.NEW);
         manager.add(task);
         Task task2 = new Task("t2", "t2d", Status.NEW);
@@ -49,14 +50,14 @@ public class FileBackedTaskManagerTest {
         manager.add(epic);
         Subtask subtask = new Subtask("s1", "s1d", Status.NEW, epic.getId());
         manager.add(subtask);
-        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
+        TaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
         Assertions.assertEquals(manager.getAll(), loadedManager.getAll());
     }
 
     @Test
     public void shouldReturnHistoryFromFileBackedTaskManager() throws IOException {
         File file = File.createTempFile("savedTest", ".csv");
-        FileBackedTaskManager manager = new FileBackedTaskManager(file.toPath());
+        TaskManager manager = new FileBackedTaskManager(file.toPath());
         Task task = new Task("t1", "t1d", Status.NEW);
         manager.add(task);
         Epic epic = new Epic("e1", "e1d", Status.NEW, new ArrayList<>());
@@ -73,7 +74,7 @@ public class FileBackedTaskManagerTest {
     public void shouldAddDifferentTasks() throws IOException {
         ArrayList<Task> expected = new ArrayList<>();
         File file = File.createTempFile("savedTest", ".csv");
-        FileBackedTaskManager manager = new FileBackedTaskManager(file.toPath());
+        TaskManager manager = new FileBackedTaskManager(file.toPath());
         Task task1 = new Task("t1", "t1d", Status.NEW);
         manager.add(task1);
         expected.add(task1);
@@ -101,9 +102,9 @@ public class FileBackedTaskManagerTest {
     @Test
     public void savingAndLoadingEmptyFileTest() throws IOException {
         File file = File.createTempFile("savedTest", ".csv");
-        FileBackedTaskManager manager = new FileBackedTaskManager(file.toPath());
+        TaskManager manager = new FileBackedTaskManager(file.toPath());
         Assertions.assertTrue(Files.readAllLines(file.toPath()).isEmpty());
-        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
+        TaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
         Assertions.assertEquals(manager.getAll(), loadedManager.getAll());
     }
 }

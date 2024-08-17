@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 class InMemoryTaskManagerTest {
 
-    InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
+    TaskManager inMemoryTaskManager = new InMemoryTaskManager();
 
     @Test
     void shouldBeAddedTaskToTaskManager() {

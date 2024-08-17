@@ -1,6 +1,6 @@
 import manager.Managers;
-import manager.taskManager.FileBackedTaskManager;
 import manager.taskManager.InMemoryTaskManager;
+import manager.taskManager.TaskManager;
 import task.Epic;
 import task.Status;
 import task.Subtask;
@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
-        FileBackedTaskManager fileBackedTaskManager = (FileBackedTaskManager) Managers.getDefault();
+        TaskManager inMemoryTaskManager = new InMemoryTaskManager();
+        TaskManager fileBackedTaskManager = Managers.getDefault();
 
         Task task1 = new Task("t1", "t1d", Status.NEW);
         inMemoryTaskManager.add(task1);
