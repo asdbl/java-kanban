@@ -60,6 +60,7 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.put(subtaskToAdd.getId(), subtaskToAdd);
         Epic epic = epics.get(subtask.getEpicId());
         if (subtask.getId() == epic.getId()) return;
+        if (epic.getSubtaskIdList().contains(subtask.getId())) return;
         epic.getSubtaskIdList().add(subtask.getId());
         updateEpicStatus(epic);
     }
@@ -73,6 +74,9 @@ public class InMemoryTaskManager implements TaskManager {
         int subtaskDoneCounter = 0;
         int subtaskNewCounter = 0;
         for (Integer subtaskId : epic.getSubtaskIdList()) {
+            if (!subtasks.containsKey(subtaskId)) {
+                return;
+            }
             Subtask sub = subtasks.get(subtaskId);
             if (sub.getStatus() == Status.DONE) {
                 subtaskDoneCounter++;
@@ -193,7 +197,7 @@ public class InMemoryTaskManager implements TaskManager {
         return null;
     }
 
-
+    @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
     }

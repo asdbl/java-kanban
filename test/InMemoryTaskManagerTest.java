@@ -1,4 +1,3 @@
-import manager.Managers;
 import manager.taskManager.InMemoryTaskManager;
 import manager.taskManager.TaskManager;
 import org.junit.jupiter.api.Assertions;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 
 class InMemoryTaskManagerTest {
 
-    InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
+    TaskManager inMemoryTaskManager = new InMemoryTaskManager();
 
     @Test
     void shouldBeAddedTaskToTaskManager() {
@@ -236,7 +235,7 @@ class InMemoryTaskManagerTest {
     @Test
     void managerShouldReturnReadyToUseTaskManager() {
         TaskManager taskManager = new InMemoryTaskManager();
-        TaskManager taskManager1 = Managers.getDefault();
+        TaskManager taskManager1 = new InMemoryTaskManager();
         Task task1 = new Task("task1", "task1 description", Status.NEW);
         taskManager1.add(task1);
         taskManager.add(task1);
