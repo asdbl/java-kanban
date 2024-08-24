@@ -19,7 +19,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
     @Override
     @Test
     public void shouldBeAddedTaskToTaskManager() {
-        Task task1 = new Task("task1", "task1 description", Status.NEW);
+        Task task1 = new Task("task1", "task1 description", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2020, 10, 10, 10, 10));
         inMemoryTaskManager.add(task1);
         Assertions.assertEquals(task1, inMemoryTaskManager.getTaskById(task1.getId()));
     }
@@ -37,7 +37,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
     void shouldBeAddedSubtaskToTaskManager() {
         Epic epic = new Epic("task1", "task1 description", Status.NEW, new ArrayList<>());
         inMemoryTaskManager.add(epic);
-        Subtask subtask = new Subtask("task1", "task1 description", Status.NEW, epic.getId());
+        Subtask subtask = new Subtask("task1", "task1 description", Status.NEW, epic.getId(), Duration.ofMinutes(10), LocalDateTime.of(2020, 10, 10, 10, 10));
         inMemoryTaskManager.add(subtask);
         Assertions.assertEquals(subtask, inMemoryTaskManager.getTaskById(subtask.getId()));
     }
@@ -45,9 +45,9 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
     @Override
     @Test
     void shouldReplaceTaskToUpdateInsteadTask1() {
-        Task task1 = new Task("task1", "task1 description", Status.NEW);
+        Task task1 = new Task("task1", "task1 description", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2020, 10, 10, 10, 10));
         inMemoryTaskManager.add(task1);
-        Task taskToUpdate = new Task("task2", "task2 description", Status.IN_PROGRESS);
+        Task taskToUpdate = new Task("task2", "task2 description", Status.IN_PROGRESS, Duration.ofMinutes(10), LocalDateTime.of(2020, 10, 10, 10, 10));
         task1 = taskToUpdate;
         inMemoryTaskManager.update(task1);
         Assertions.assertEquals(taskToUpdate, inMemoryTaskManager.getTaskById(task1.getId()));
@@ -69,10 +69,10 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
     void shouldReplaceSubtaskToUpdateInsteadSubtask1() {
         Epic epic1 = new Epic("task1", "task1 description", Status.NEW, new ArrayList<>());
         inMemoryTaskManager.add(epic1);
-        Subtask subtask1 = new Subtask("task1", "task1 description", Status.NEW, epic1.getId());
+        Subtask subtask1 = new Subtask("task1", "task1 description", Status.NEW, epic1.getId(), Duration.ofMinutes(10), LocalDateTime.of(2020, 10, 10, 10, 10));
         inMemoryTaskManager.add(subtask1);
         Assertions.assertEquals(subtask1, inMemoryTaskManager.getTaskById(subtask1.getId()));
-        Subtask subtaskToUpdate = new Subtask("task2", "task2 description", Status.IN_PROGRESS, epic1.getId());
+        Subtask subtaskToUpdate = new Subtask("task2", "task2 description", Status.IN_PROGRESS, epic1.getId(), Duration.ofMinutes(10), LocalDateTime.of(2020, 10, 10, 10, 10));
         subtask1 = subtaskToUpdate;
         inMemoryTaskManager.update(subtask1);
         Assertions.assertEquals(subtaskToUpdate, inMemoryTaskManager.getTaskById(subtask1.getId()));
@@ -277,8 +277,8 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
     @Override
     @Test
     void shouldBeEqualIfEpicSame() {
-        Epic epic1 = new Epic("epic1", "epic1 description", Status.NEW, new ArrayList<>());
-        Epic epic2 = new Epic("epic1", "epic1 description", Status.NEW, new ArrayList<>());
+        Epic epic1 = new Epic("epic1", "epic1 description", Status.NEW, new ArrayList<>(), Duration.ofMinutes(10), LocalDateTime.of(2020, 10, 10, 10, 10));
+        Epic epic2 = new Epic("epic1", "epic1 description", Status.NEW, new ArrayList<>(), Duration.ofMinutes(10), LocalDateTime.of(2020, 10, 10, 10, 10));
         Assertions.assertEquals(epic1, epic2);
     }
 
