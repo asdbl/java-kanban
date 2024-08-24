@@ -5,6 +5,8 @@ import task.Subtask;
 import task.Task;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public interface TaskManager {
     void add(Task task);
@@ -36,4 +38,8 @@ public interface TaskManager {
     List<Subtask> getSubtasksByEpic(Epic epic);
 
     List<Task> getHistory();
+
+    TreeSet<Task> getPrioritizedTasks();
+
+    boolean isOverlap(Task task);
 }
