@@ -69,6 +69,7 @@ public class Task implements Comparable<Task> {
         this.id = id;
     }
 
+
     public LocalDateTime getEndTime() {
         return startTime.plus(duration);
     }
@@ -91,8 +92,10 @@ public class Task implements Comparable<Task> {
 
     @Override
     public String toString() {
-        return String.format("Task{id=%d, taskName='%s', taskDescription='%s', status='%s', -, startTime='%s', duration='%s', endTime='%s'}",
-                getId(), getTaskName(), getTaskDescription(), getStatus(), getStartTime(), getDuration(), getEndTime());
+        return String.format("Task{id=%d, taskName='%s', taskDescription='%s', status='%s', -," +
+                        " startTime='%s', duration='%s', endTime='%s'}",
+                getId(), getTaskName(), getTaskDescription(),
+                getStatus(), getStartTime(), getDuration(), getEndTime());
     }
 
     @Override

@@ -38,7 +38,7 @@ public interface TaskManager {
 
     List<Task> getHistory();
 
-    TreeSet<Task> getPrioritizedTasks();
+    List<Task> getPrioritizedTasks();
 
     boolean isOverlap(Task task);
 }
