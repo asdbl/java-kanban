@@ -168,7 +168,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename.toFile()))) {
             writer.write(HEADER);
             writer.newLine();
-            for (Task task : getPrioritizedTasks()) {
+            for (Task task : getAll()) {
                 writer.write(toString(task));
                 writer.newLine();
             }
