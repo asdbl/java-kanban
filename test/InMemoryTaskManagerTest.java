@@ -47,7 +47,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
     void shouldReplaceTaskToUpdateInsteadTask1() {
         Task task1 = new Task("task1", "task1 description", Status.NEW, Duration.ofMinutes(10), LocalDateTime.of(2020, 10, 10, 10, 10));
         inMemoryTaskManager.add(task1);
-        Task taskToUpdate = new Task("task2", "task2 description", Status.IN_PROGRESS, Duration.ofMinutes(10), LocalDateTime.of(2020, 10, 10, 10, 10));
+        Task taskToUpdate = new Task("task2", "task2 description", Status.IN_PROGRESS, Duration.ofMinutes(10), LocalDateTime.of(2020, 11, 10, 10, 10));
         task1 = taskToUpdate;
         inMemoryTaskManager.update(task1);
         Assertions.assertEquals(taskToUpdate, inMemoryTaskManager.getTaskById(task1.getId()));
@@ -72,7 +72,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         Subtask subtask1 = new Subtask("task1", "task1 description", Status.NEW, epic1.getId(), Duration.ofMinutes(10), LocalDateTime.of(2020, 10, 10, 10, 10));
         inMemoryTaskManager.add(subtask1);
         Assertions.assertEquals(subtask1, inMemoryTaskManager.getTaskById(subtask1.getId()));
-        Subtask subtaskToUpdate = new Subtask("task2", "task2 description", Status.IN_PROGRESS, epic1.getId(), Duration.ofMinutes(10), LocalDateTime.of(2020, 10, 10, 10, 10));
+        Subtask subtaskToUpdate = new Subtask("task2", "task2 description", Status.IN_PROGRESS, epic1.getId(), Duration.ofMinutes(10), LocalDateTime.of(2021, 10, 10, 10, 10));
         subtask1 = subtaskToUpdate;
         inMemoryTaskManager.update(subtask1);
         Assertions.assertEquals(subtaskToUpdate, inMemoryTaskManager.getTaskById(subtask1.getId()));

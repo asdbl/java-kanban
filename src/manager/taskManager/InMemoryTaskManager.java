@@ -17,7 +17,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Epic> epics;
     private final Map<Integer, Subtask> subtasks;
     private final HistoryManager historyManager = Managers.getDefaultHistory();
-    protected final TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getId));
+    protected final TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -76,7 +76,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic.getSubtaskIdList().contains(subtaskId)) return;
         epic.getSubtaskIdList().add(subtaskId);
         updateEpicStatus(epic);
-        epic.setDuration(epic.getDuration().plus(subtask.getDuration()));
         updateEpicDuration(epic);
     }
 
@@ -170,7 +169,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void update(Task task) {
         if (isOverlap(task)) {
-            task.setStartTime(getPrioritizedTasks().getLast().getEndTime());
+            throw new RuntimeException("Пересечение задачи по времени!");
         }
         tasks.put(task.getId(), task);
         prioritizedTasks.remove(task);
@@ -190,18 +189,17 @@ public class InMemoryTaskManager implements TaskManager {
                 subtasks.get(i).setStatus(Status.DONE);
             }
         }
-        prioritizedTasks.remove(epic);
-        prioritizedTasks.add(epic);
     }
 
     @Override
     public void update(Subtask subtask) {
         if (isOverlap(subtask)) {
-            subtask.setStartTime(getPrioritizedTasks().getLast().getEndTime());
+            throw new RuntimeException("Пересечение времени задачи");
         }
         subtasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
         updateEpicStatus(epic);
+        updateEpicDuration(epic);
         prioritizedTasks.remove(subtask);
         prioritizedTasks.add(subtask);
     }
