@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import manager.taskManager.TaskManager;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public class BaseHttpHandler {
+public class BaseHttpHandler implements HttpHandler {
     protected TaskManager manager;
     private static final Charset CHARSET = StandardCharsets.UTF_8;
     protected Gson gson;
@@ -62,7 +63,7 @@ public class BaseHttpHandler {
 
     public void sendWrongMethod(HttpExchange exchange) throws IOException {
         exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        exchange.sendResponseHeaders(400, 0);
+        exchange.sendResponseHeaders(405, 0);
         try (OutputStream os = exchange.getResponseBody()) {
             os.write("Невереный метод!".getBytes(CHARSET));
         }
@@ -83,6 +84,45 @@ public class BaseHttpHandler {
         } catch (NumberFormatException e) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public void handle(HttpExchange exchange) throws IOException {
+        HttpMethod method = HttpMethod.valueOf(exchange.getRequestMethod());
+        String[] pathSplit = exchange.getRequestURI().getPath().split("/");
+        switch (method) {
+            case HttpMethod.GET:
+                if (pathSplit.length == 2) {
+                    getTaskResponse(exchange);
+                } else {
+                    if (getTaskId(exchange).isPresent()) {
+                        getTaskByIdResponse(exchange, getTaskId(exchange).get());
+                    }
+                }
+                break;
+            case HttpMethod.POST:
+                postTask(exchange);
+                break;
+            case HttpMethod.DELETE:
+                deleteTask(exchange, getTaskId(exchange).get());
+                break;
+        }
+    }
+
+    public void getTaskResponse(HttpExchange exchange) throws IOException {
+        sendWrongMethod(exchange);
+    }
+
+    public void getTaskByIdResponse(HttpExchange exchange, int id) throws IOException {
+        sendWrongMethod(exchange);
+    }
+
+    public void deleteTask(HttpExchange exchange, int id) throws IOException {
+        sendWrongMethod(exchange);
+    }
+
+    public void postTask(HttpExchange exchange) throws IOException {
+        sendWrongMethod(exchange);
     }
 
 }

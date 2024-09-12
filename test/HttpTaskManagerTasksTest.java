@@ -19,7 +19,6 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -323,8 +322,8 @@ public class HttpTaskManagerTasksTest {
         client.send(request3, HttpResponse.BodyHandlers.ofString());
 
         URI url1 = URI.create("http://localhost:8080/tasks/1");
-        URI url2 = URI.create("http://localhost:8080/tasks/3");
-        URI url3 = URI.create("http://localhost:8080/tasks/2");
+        URI url2 = URI.create("http://localhost:8080/tasks/2");
+        URI url3 = URI.create("http://localhost:8080/tasks/3");
         HttpRequest getRequest1 = HttpRequest.newBuilder()
                 .uri(url1)
                 .GET()
@@ -337,6 +336,7 @@ public class HttpTaskManagerTasksTest {
                 .uri(url3)
                 .GET()
                 .build();
+
 
         client.send(getRequest1, HttpResponse.BodyHandlers.ofString());
         client.send(getRequest2, HttpResponse.BodyHandlers.ofString());

@@ -14,30 +14,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     @Override
-    public void handle(HttpExchange exchange) {
-        String method = exchange.getRequestMethod();
-        String[] pathSplit = exchange.getRequestURI().getPath().split("/");
-        switch (method) {
-            case "GET":
-                if (pathSplit.length == 2) {
-                    getEpicResponse(exchange);
-                } else {
-                    if (getTaskId(exchange).isPresent()) {
-                        getEpicByIdResponse(exchange, getTaskId(exchange).get());
-                    }
-                }
-                break;
-            case "POST":
-                postEpic(exchange);
-                break;
-            case "DELETE":
-                deleteEpic(exchange, getTaskId(exchange).get());
-                break;
-        }
-
-    }
-
-    public void getEpicResponse(HttpExchange exchange) {
+    public void getTaskResponse(HttpExchange exchange) {
         try {
             if (manager.getEpics().isEmpty()) {
                 sendText(exchange, "Список эпиков пуст!", 404);
@@ -49,22 +26,24 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    public void getEpicByIdResponse(HttpExchange exchange, int id) {
+    @Override
+    public void getTaskByIdResponse(HttpExchange exchange, int id) {
         try {
-            if (manager.getTaskById(id) != null) {
-                Epic epic = (Epic) manager.getTaskById(id);
-                sendText(exchange, gson.toJson(epic), 200);
-            } else {
+            Epic epic = (Epic) manager.getTaskById(id);
+            if (epic == null) {
                 sendText(exchange, "Эпик не найден!", 404);
+                return;
             }
+            sendText(exchange, gson.toJson(epic), 200);
         } catch (IOException e) {
-            System.out.println("Ошибка во время запроса эпика по id: " + id + "! " + e.getMessage());
+            System.out.println("Ошибка во время запроса эпика по id: " + id + "!");
         }
     }
 
-    public void deleteEpic(HttpExchange exchange, int id) {
+    @Override
+    public void deleteTask(HttpExchange exchange, int id) {
         try {
-            if (manager.getEpics().contains(manager.getTaskById(id))) {
+            if (manager.getTaskById(id) != null) {
                 manager.removeById(id);
                 sendText(exchange, "Эпик с id " + id + " успешно удален!", 200);
             } else {
@@ -75,7 +54,8 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    public void postEpic(HttpExchange exchange) {
+    @Override
+    public void postTask(HttpExchange exchange) {
         try {
             String ex = bodyToString(exchange);
             if (!ex.isEmpty()) {

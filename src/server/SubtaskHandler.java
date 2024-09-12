@@ -13,30 +13,9 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
         super(manager);
     }
 
-    @Override
-    public void handle(HttpExchange exchange) {
-        String method = exchange.getRequestMethod();
-        String[] pathSplit = exchange.getRequestURI().getPath().split("/");
-        switch (method) {
-            case "GET":
-                if (pathSplit.length == 2) {
-                    getSubtaskResponse(exchange);
-                } else {
-                    if (getTaskId(exchange).isPresent()) {
-                        getSubtaskByIdResponse(exchange, getTaskId(exchange).get());
-                    }
-                }
-                break;
-            case "POST":
-                postSubtask(exchange);
-                break;
-            case "DELETE":
-                deleteSubtask(exchange, getTaskId(exchange).get());
-                break;
-        }
-    }
 
-    public void getSubtaskResponse(HttpExchange exchange) {
+    @Override
+    public void getTaskResponse(HttpExchange exchange) {
         try {
             if (manager.getSubtasks().isEmpty()) {
                 sendText(exchange, "Список подзадач пуст!", 404);
@@ -48,21 +27,22 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    public void getSubtaskByIdResponse(HttpExchange exchange, int id) {
+    @Override
+    public void getTaskByIdResponse(HttpExchange exchange, int id) {
         try {
-
-            if (manager.getTaskById(id) != null) {
-                Subtask subtask = (Subtask) manager.getTaskById(id);
-                sendText(exchange, gson.toJson(subtask), 200);
-            } else {
+            final Subtask subtask = (Subtask) manager.getTaskById(id);
+            if (subtask == null) {
                 sendText(exchange, "Подзадача не найдена!", 404);
+                return;
             }
+            sendText(exchange, gson.toJson(subtask), 200);
         } catch (IOException e) {
             System.out.println("Ошибка во время запроса подзадачи по id! " + e.getMessage());
         }
     }
 
-    public void deleteSubtask(HttpExchange exchange, int id) {
+    @Override
+    public void deleteTask(HttpExchange exchange, int id) {
         try {
             if (manager.getTaskById(id) != null) {
                 manager.removeById(id);
@@ -75,7 +55,8 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    public void postSubtask(HttpExchange exchange) {
+    @Override
+    public void postTask(HttpExchange exchange) {
         try {
             String ex = bodyToString(exchange);
             if (!ex.isEmpty()) {

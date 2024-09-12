@@ -1,5 +1,6 @@
 package manager.taskManager;
 
+import exceptions.TaskOverlapException;
 import manager.Managers;
 import manager.historyManager.HistoryManager;
 import task.Epic;
@@ -169,7 +170,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void update(Task task) {
         if (isOverlap(task)) {
-            throw new RuntimeException("Пересечение задачи по времени!");
+            throw new TaskOverlapException("Пересечение задачи по времени!");
         }
         tasks.put(task.getId(), task);
         prioritizedTasks.remove(task);
@@ -194,7 +195,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void update(Subtask subtask) {
         if (isOverlap(subtask)) {
-            throw new RuntimeException("Пересечение времени задачи");
+            throw new TaskOverlapException("Пересечение времени задачи");
         }
         subtasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
