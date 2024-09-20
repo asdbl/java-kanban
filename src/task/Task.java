@@ -28,6 +28,15 @@ public class Task implements Comparable<Task> {
         this.startTime = startTime;
     }
 
+    public Task(int id, String taskName, String taskDescription, Status status, Duration duration, LocalDateTime startTime) {
+        this.id = id;
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
     public Task(Task task) {
         this.taskName = task.taskName;
         this.taskDescription = task.taskDescription;

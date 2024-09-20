@@ -14,6 +14,12 @@ public class Epic extends Task {
         this.endTime = LocalDateTime.now();
     }
 
+    public Epic(int id, String taskName, String taskDescription, Status status, List<Integer> subtaskIdList,
+                Duration duration, LocalDateTime startTime) {
+        super(id, taskName, taskDescription, status, duration, startTime);
+        this.subtaskIdList = subtaskIdList;
+    }
+
     public Epic(String taskName, String taskDescription, Status status, List<Integer> subtaskIdList,
                 Duration duration, LocalDateTime startTime) {
         super(taskName, taskDescription, status, duration, startTime);
